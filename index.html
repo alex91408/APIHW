@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="自動雨量站-雨量觀測資料">
+	<meta name="author" content="Alex">
+  <title>自動雨量站-雨量觀測資料</title>
+  <link rel="shortcut icon" href="img/01.png" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous"></script>
+
+  <!-- DT -->
+  <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/b-1.7.1/b-print-1.7.1/datatables.min.css" /> -->
+  <!-- <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.25/b-1.7.1/b-print-1.7.1/datatables.min.js"></script> -->
+
+
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.10.25/datatables.min.css" />
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/js/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.10.25/datatables.min.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CT5Y3TWMJL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-CT5Y3TWMJL');
+</script>
+
+  <style>
+    body {
+      max-width: 1140px;
+      margin: 0 auto;
+      background: url(./img/rain.jpg) no-repeat;
+      background-size: cover;
+      background-position: center 0; 
+      background-attachment: fixed; 
+    }
+    h1{
+      background-color: rgb(5, 83, 151);
+      color: rgb(255, 255, 255);
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="container">
+  <h1 class="mt-5  text-center">自動雨量站-即時雨量觀測資料</h1><br><br>
+  <table class="table table-striped table-warning table-sm table-hover text-center">
+    <thead >
+      <tr class="table-info text-center">
+        <th width="6%">編號</th>
+        <th>地點名稱</th>
+        <th>觀測時間</th>
+        <th width="6%">現在</th>
+        <th >過去6小時的雨量</th>
+        <th>過去12小時的雨量</th>
+        <th>過去24小時的雨量</th>
+        <th>過去3天的雨量</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+
+</div>
+
+  <script>
+    let data;
+    $.getJSON('https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/O-A0002-001?Authorization=rdec-key-123-45678-011121314&format=JSON')
+      .done(function (re) {
+        // re => data => DOM write => HTML
+        data = re.cwbopendata.location;
+      //   data=re;
+      // console.log(data);
+      for (let i = 0; i < data.length; i++) {
+          // const row = data[i];
+          $("tbody").append(`
+        <tr>
+          <td>${i + 1}</td>
+          <td>${data[i].locationName}</td>
+          <td>${data[i].time.obsTime}</td>
+          <td>${data[i].weatherElement[7].elementValue.value}</td>
+          <td>${data[i].weatherElement[4].elementValue.value}</td>
+          <td>${data[i].weatherElement[5].elementValue.value}</td>
+          <td>${data[i].weatherElement[6].elementValue.value}</td>
+          <td>${data[i].weatherElement[9].elementValue.value}</td>
+
+        </tr>
+      `);
+        }
+        $('table').DataTable();
+      }).fail(function (re) {
+        console.log("api error!", re);
+      });
+
+  </script>
+  <footer class="bg-dark text-muted text-center py-3">
+    
+    <a href="https://data.gov.tw/dataset/9177"  style="text-decoration:none;">資料來源:政府資料開放平台</a>
+   
+  </footer>
+</body>
+
+</html>
